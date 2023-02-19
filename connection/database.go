@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/nikhitabarat/opendesk/configs"
+	configs "github.com/nikhitabarat/opendesk/configs"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

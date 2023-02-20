@@ -24,8 +24,12 @@ func AddTask(c *fiber.Ctx) error {
 	var task models.Task
 	defer cancel()
 
-	// validatte the request body
+	//validate the request body
+	if err := c.BodyParser(&task); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(responses.TaskResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	}
 
+	// validatte the request body
 	if validationErr := validate.Struct(&task); validationErr != nil {
 		return c.Status(http.StatusBadRequest).JSON(responses.TaskResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": validationErr.Error()}})
 	}
@@ -40,6 +44,8 @@ func AddTask(c *fiber.Ctx) error {
 		Created:     task.Created,
 		TaskStatus:  task.TaskStatus,
 	}
+
+	// fmt.Println(task.TaskTitle, task.TaskTag, task.TaskTag, task.DateAdded, task.Description, task.Created, task.TaskStatus)
 
 	result, err := employeeCollection.InsertOne(ctx, newTask)
 	if err != nil {

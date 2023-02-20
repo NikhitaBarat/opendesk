@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 import './App.css';
 import { Header } from './components';
-import { Home } from './routes';
+import { DetailedTask, Home, Motivation, News } from './routes';
 
 
 
@@ -13,6 +13,18 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />
+  },
+  {
+    path: "/motivation",
+    element: <Motivation />
+  },
+  {
+    path: "/news",
+    element: <News />
+  },
+  {
+    path: "/task",
+    element: <DetailedTask />
   }
 ])
 

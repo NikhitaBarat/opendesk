@@ -38,6 +38,6 @@ func OpenDeskApiHandler() {
 	router.Get("/api", func(c *fiber.Ctx) error {
 		return c.JSON(&fiber.Map{"data": "Hello from Fiber & mongoDB"})
 	})
-	router.Listen(":8080")
+	router.Listen(":8000")
 
 }

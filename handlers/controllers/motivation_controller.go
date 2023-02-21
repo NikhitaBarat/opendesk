@@ -52,7 +52,7 @@ func GetAllQuotes(c *fiber.Ctx) error {
 		responses.ResponseType{
 			Status:  http.StatusOK,
 			Message: "success",
-			Data:    &fiber.Map{"data": results}},
+			Data:    &fiber.Map{"data": quotes}},
 	)
 }
 

@@ -30,9 +30,14 @@ func OpenDeskApiHandler() {
 	router.Get("/tasks", controllers.GetEmployeeTask)
 	router.Delete("/task/:taskId", controllers.DeleteTaskbyId)
 
+	router.Get("/quotes", controllers.GetAllQuotes)
+	router.Post("/quote", controllers.CreateMotivationQuotes)
+	router.Get("/quote/:quoteId", controllers.GetQuotesbyId)
+	router.Delete("/quote/:quoteId", controllers.DeleteQuotes)
+
 	router.Get("/api", func(c *fiber.Ctx) error {
 		return c.JSON(&fiber.Map{"data": "Hello from Fiber & mongoDB"})
 	})
-	router.Listen(":8090")
+	router.Listen(":8080")
 
 }

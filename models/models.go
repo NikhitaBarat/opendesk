@@ -12,3 +12,10 @@ type Task struct {
 	Created     string             `json:"created,omitempty" validate:"required"`
 	TaskStatus  bool               `json:"task_status,omitempty"`
 }
+
+type Quote struct {
+	Id     primitive.ObjectID `json:"id,omitempty"`
+	Quote  string             `json:"quote,omitempty" validate:"required"`
+	Author string             `json:"author,omitempty" validate:"required"`
+	Slug   string             `json:"slug,omitempty" validate:"required"`
+}

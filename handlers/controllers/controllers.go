@@ -24,10 +24,22 @@ func AddTask(c *fiber.Ctx) error {
 	var task models.Task
 	defer cancel()
 
-	// validatte the request body
+	//validate the request body
+	if err := c.BodyParser(&task); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(
+			responses.ResponseType{
+				Status:  http.StatusBadRequest,
+				Message: "error",
+				Data:    &fiber.Map{"data": err.Error()}})
+	}
 
+	// validate the request body
 	if validationErr := validate.Struct(&task); validationErr != nil {
-		return c.Status(http.StatusBadRequest).JSON(responses.TaskResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": validationErr.Error()}})
+		return c.Status(http.StatusBadRequest).JSON(
+			responses.ResponseType{
+				Status:  http.StatusBadRequest,
+				Message: "error",
+				Data:    &fiber.Map{"data": validationErr.Error()}})
 	}
 
 	newTask := models.Task{
@@ -41,17 +53,19 @@ func AddTask(c *fiber.Ctx) error {
 		TaskStatus:  task.TaskStatus,
 	}
 
+	// fmt.Println(task.TaskTitle, task.TaskTag, task.TaskTag, task.DateAdded, task.Description, task.Created, task.TaskStatus)
+
 	result, err := employeeCollection.InsertOne(ctx, newTask)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(
-			responses.TaskResponse{
+			responses.ResponseType{
 				Status:  http.StatusInternalServerError,
 				Message: "error",
 				Data:    &fiber.Map{"data": err.Error()}})
 	}
 
 	return c.Status(http.StatusCreated).JSON(
-		responses.TaskResponse{
+		responses.ResponseType{
 			Status:  http.StatusCreated,
 			Message: "error",
 			Data:    &fiber.Map{"data": result}},
@@ -69,7 +83,7 @@ func DeleteTaskbyId(c *fiber.Ctx) error {
 	result, err := employeeCollection.DeleteOne(ctx, bson.M{"id": objId})
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(
-			responses.TaskResponse{
+			responses.ResponseType{
 				Status:  http.StatusInternalServerError,
 				Message: "error",
 				Data:    &fiber.Map{"data": err.Error()}},
@@ -78,7 +92,7 @@ func DeleteTaskbyId(c *fiber.Ctx) error {
 
 	if result.DeletedCount < 1 {
 		return c.Status(http.StatusNotFound).JSON(
-			responses.TaskResponse{
+			responses.ResponseType{
 				Status:  http.StatusNotFound,
 				Message: "error",
 				Data:    &fiber.Map{"data": "Task with specified Id not found!"}},
@@ -86,7 +100,7 @@ func DeleteTaskbyId(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(
-		responses.TaskResponse{
+		responses.ResponseType{
 			Status:  http.StatusOK,
 			Message: "success",
 			Data:    &fiber.Map{"data": "Task successfully deleted!"}},
@@ -107,7 +121,7 @@ func GetEmployeeTask(c *fiber.Ctx) error {
 	results, err := employeeCollection.Find(ctx, bson.M{})
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(
-			responses.TaskResponse{
+			responses.ResponseType{
 				Status:  http.StatusInternalServerError,
 				Message: "error",
 				Data:    &fiber.Map{"data": err.Error()}},
@@ -120,7 +134,7 @@ func GetEmployeeTask(c *fiber.Ctx) error {
 		var singleTask models.Task
 		if err = results.Decode(&singleTask); err != nil {
 			return c.Status(http.StatusInternalServerError).JSON(
-				responses.TaskResponse{
+				responses.ResponseType{
 					Status:  http.StatusInternalServerError,
 					Message: "error",
 					Data:    &fiber.Map{"data": err.Error()}},
@@ -129,7 +143,7 @@ func GetEmployeeTask(c *fiber.Ctx) error {
 		tasks = append(tasks, singleTask)
 	}
 	return c.Status(http.StatusOK).JSON(
-		responses.TaskResponse{
+		responses.ResponseType{
 			Status:  http.StatusOK,
 			Message: "success",
 			Data:    &fiber.Map{"data": tasks}},
@@ -148,7 +162,7 @@ func GetTaskbyId(c *fiber.Ctx) error {
 	err := employeeCollection.FindOne(ctx, bson.M{"id": objId}).Decode(&task)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(
-			responses.TaskResponse{
+			responses.ResponseType{
 				Status:  http.StatusInternalServerError,
 				Message: "error",
 				Data:    &fiber.Map{"data": err.Error()}},
@@ -156,7 +170,7 @@ func GetTaskbyId(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(
-		responses.TaskResponse{
+		responses.ResponseType{
 			Status:  http.StatusOK,
 			Message: "error",
 			Data:    &fiber.Map{"data": task}},
